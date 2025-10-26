@@ -1,0 +1,25 @@
+## IntelliJ / Android Studio
+*.iml
+.idea/
+
+## Gradle
+.gradle/
+/.kotlin/
+
+## Local machine config
+local.properties
+/local.properties
+
+## Build outputs
+**/build/
+**/captures/
+.externalNativeBuild/
+.cxx/
+
+## OS junk
+.DS_Store
+Thumbs.db
+
+## Keystores (no subir credenciales)
+*.jks
+*.keystore
