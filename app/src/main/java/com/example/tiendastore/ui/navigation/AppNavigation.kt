@@ -2,23 +2,26 @@ package com.example.tiendastore.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.collectAsState
-import com.example.tiendastore.viewmodel.AuthViewModel
-import com.example.tiendastore.viewmodel.ProductViewModel
-import com.example.tiendastore.ui.view.AdminScreen
+import com.example.tiendastore.ui.view.AdminAddScreen
+import com.example.tiendastore.ui.view.AdminEditScreen
+import com.example.tiendastore.ui.view.AdminListScreen
 import com.example.tiendastore.ui.view.HomeScreen
 import com.example.tiendastore.ui.view.LoginScreen
 import com.example.tiendastore.ui.view.RegisterScreen
+import com.example.tiendastore.viewmodel.AuthViewModel
+import com.example.tiendastore.viewmodel.ProductViewModel
 
-enum class Screen { LOGIN, REGISTER, HOME, ADMIN }
+enum class Screen { LOGIN, REGISTER, HOME, PRODUCT_DETAIL, ADMIN_LIST, ADMIN_ADD, ADMIN_EDIT }
 
 @Composable
 fun AppNavigation(authVM: AuthViewModel, productVM: ProductViewModel) {
     var screen by remember { mutableStateOf(Screen.LOGIN) }
+    var selectedId by remember { mutableStateOf<Int?>(null) }
     val currentUser by authVM.currentUser.collectAsState()
 
     LaunchedEffect(currentUser) {
@@ -40,18 +43,60 @@ fun AppNavigation(authVM: AuthViewModel, productVM: ProductViewModel) {
             products = productVM.products.collectAsState().value,
             isAdmin = currentUser?.isAdmin == true,
             onLogout = { authVM.logout() },
-            onAdmin = { screen = Screen.ADMIN }
+            onAdmin = { screen = Screen.ADMIN_LIST },
+            onProductClick = { id ->
+                selectedId = id
+                screen = Screen.PRODUCT_DETAIL
+            }
         )
-        Screen.ADMIN -> AdminScreen(
-            form = productVM.form.collectAsState().value,
+        Screen.PRODUCT_DETAIL -> {
+            val products = productVM.products.collectAsState().value
+            val product = products.firstOrNull { it.id == selectedId }
+            com.example.tiendastore.ui.view.ProductDetailScreen(
+                product = product,
+                onBack = { screen = Screen.HOME }
+            )
+        }
+        Screen.ADMIN_LIST -> AdminListScreen(
             products = productVM.products.collectAsState().value,
-            onChange = { field, value -> productVM.onFieldChange(field, value) },
-            onSave = { productVM.addOrUpdate() },
-            onCancel = { productVM.clearForm() },
-            onEdit = { id -> productVM.edit(id) },
+            onAdd = {
+                productVM.clearForm()
+                screen = Screen.ADMIN_ADD
+            },
+            onEdit = { id ->
+                selectedId = id
+                screen = Screen.ADMIN_EDIT
+            },
             onDelete = { id -> productVM.delete(id) },
             onBack = { screen = Screen.HOME }
         )
+        Screen.ADMIN_ADD -> AdminAddScreen(
+            form = productVM.form.collectAsState().value,
+            onChange = { f, v -> productVM.onFieldChange(f, v) },
+            onSave = {
+                productVM.addOrUpdate()
+                screen = Screen.ADMIN_LIST
+            },
+            onCancel = {
+                productVM.clearForm()
+                screen = Screen.ADMIN_LIST
+            },
+            onBack = { screen = Screen.ADMIN_LIST }
+        )
+        Screen.ADMIN_EDIT -> AdminEditScreen(
+            id = selectedId,
+            form = productVM.form.collectAsState().value,
+            onStart = { id -> if (id != null) productVM.edit(id) },
+            onChange = { f, v -> productVM.onFieldChange(f, v) },
+            onSave = {
+                productVM.addOrUpdate()
+                screen = Screen.ADMIN_LIST
+            },
+            onCancel = {
+                productVM.clearForm()
+                screen = Screen.ADMIN_LIST
+            },
+            onBack = { screen = Screen.ADMIN_LIST }
+        )
     }
 }
-

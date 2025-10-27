@@ -1,73 +1,92 @@
 package com.example.tiendastore.ui.view
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.example.tiendastore.viewmodel.ProductFormState
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.example.tiendastore.model.Product
-import com.example.tiendastore.viewmodel.ProductFormState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AdminScreen(
+fun AdminAddScreen(
     form: ProductFormState,
-    products: List<Product>,
     onChange: (String, String) -> Unit,
     onSave: () -> Unit,
     onCancel: () -> Unit,
-    onEdit: (Int) -> Unit,
-    onDelete: (Int) -> Unit,
     onBack: () -> Unit
 ) {
-    Scaffold(topBar = { TopAppBar(title = { Text("Panel Admin") }, navigationIcon = {}) }) { padding ->
+    LaunchedEffect(Unit) { /* entrada limpia */ }
+    AdminFormScaffold(title = "Agregar producto", form = form, onChange = onChange, onSave = onSave, onCancel = onCancel, onBack = onBack)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AdminEditScreen(
+    id: Int?,
+    form: ProductFormState,
+    onStart: (Int?) -> Unit,
+    onChange: (String, String) -> Unit,
+    onSave: () -> Unit,
+    onCancel: () -> Unit,
+    onBack: () -> Unit
+) {
+    LaunchedEffect(id) { onStart(id) }
+    AdminFormScaffold(title = if (form.id == null) "Editar" else "Editar #${form.id}", form = form, onChange = onChange, onSave = onSave, onCancel = onCancel, onBack = onBack)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun AdminFormScaffold(
+    title: String,
+    form: ProductFormState,
+    onChange: (String, String) -> Unit,
+    onSave: () -> Unit,
+    onCancel: () -> Unit,
+    onBack: () -> Unit
+) {
+    Scaffold(topBar = {
+        TopAppBar(
+            title = { Text(title) },
+            navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.Default.ArrowBack, contentDescription = "Volver") } }
+        )
+    }) { padding ->
         Column(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp)
         ) {
-            Text("Listado", style = MaterialTheme.typography.titleLarge)
-            LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                items(products) { p ->
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Column(Modifier.weight(1f)) {
-                            Text("#${p.id} - ${p.name}")
-                            Text("${p.category} | ${p.stock} uds | ${p.price}")
-                        }
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Button(onClick = { onEdit(p.id) }) { Text("Editar") }
-                            Button(onClick = { onDelete(p.id) }) { Text("Eliminar") }
-                        }
-                    }
-                    Divider(modifier = Modifier.padding(vertical = 8.dp))
-                }
-            }
-
-            Text(if (form.id == null) "Nuevo producto" else "Editar #${form.id}", style = MaterialTheme.typography.titleLarge)
-
             OutlinedTextField(
                 value = form.name,
                 onValueChange = { onChange("name", it) },
@@ -77,6 +96,7 @@ fun AdminScreen(
             AnimatedVisibility(visible = form.errors["name"] != null) {
                 Text(form.errors["name"] ?: "", color = MaterialTheme.colorScheme.error)
             }
+            Spacer(Modifier.height(8.dp))
 
             OutlinedTextField(
                 value = form.price,
@@ -87,6 +107,7 @@ fun AdminScreen(
             AnimatedVisibility(visible = form.errors["price"] != null) {
                 Text(form.errors["price"] ?: "", color = MaterialTheme.colorScheme.error)
             }
+            Spacer(Modifier.height(8.dp))
 
             OutlinedTextField(
                 value = form.stock,
@@ -97,11 +118,13 @@ fun AdminScreen(
             AnimatedVisibility(visible = form.errors["stock"] != null) {
                 Text(form.errors["stock"] ?: "", color = MaterialTheme.colorScheme.error)
             }
+            Spacer(Modifier.height(8.dp))
 
             CategoryDropdown(selected = form.category, onSelected = { onChange("category", it) })
             AnimatedVisibility(visible = form.errors["category"] != null) {
                 Text(form.errors["category"] ?: "", color = MaterialTheme.colorScheme.error)
             }
+            Spacer(Modifier.height(8.dp))
 
             OutlinedTextField(
                 value = form.description,
@@ -110,13 +133,18 @@ fun AdminScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(onClick = onSave, enabled = form.isValid) { Text("Guardar") }
-                Button(onClick = onCancel) { Text("Cancelar") }
-                Spacer(Modifier.weight(1f))
-                Button(onClick = onBack) { Text("Volver") }
-            }
+            Spacer(Modifier.height(16.dp))
+            RowButtons(onSave = onSave, onCancel = onCancel, enabled = form.isValid)
         }
+    }
+}
+
+@Composable
+private fun RowButtons(onSave: () -> Unit, onCancel: () -> Unit, enabled: Boolean) {
+    Row {
+        Button(onClick = onSave, enabled = enabled) { Text("Guardar") }
+        Spacer(Modifier.width(8.dp))
+        Button(onClick = onCancel) { Text("Cancelar") }
     }
 }
 
@@ -133,7 +161,9 @@ private fun CategoryDropdown(selected: String, onSelected: (String) -> Unit) {
             readOnly = true,
             label = { Text("Categoría") },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth()
         )
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             options.forEach { opt ->

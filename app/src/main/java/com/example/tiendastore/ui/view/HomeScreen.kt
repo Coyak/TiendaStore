@@ -1,5 +1,6 @@
 package com.example.tiendastore.ui.view
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,7 +32,8 @@ fun HomeScreen(
     products: List<Product>,
     isAdmin: Boolean,
     onLogout: () -> Unit,
-    onAdmin: () -> Unit
+    onAdmin: () -> Unit,
+    onProductClick: (Int) -> Unit
 ) {
     Scaffold(topBar = {
         TopAppBar(title = { Text("TiendaStore") }, actions = {
@@ -56,7 +58,10 @@ fun HomeScreen(
             Spacer(Modifier.height(8.dp))
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(products) { p ->
-                    Column(modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onProductClick(p.id) }
+                    ) {
                         Text(p.name, style = MaterialTheme.typography.titleMedium)
                         Text("Precio: ${formatPriceCLP(p.price)}")
                         Text("Stock: ${p.stock}")
