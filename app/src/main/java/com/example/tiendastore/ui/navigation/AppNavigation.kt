@@ -1,5 +1,6 @@
 package com.example.tiendastore.ui.navigation
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -42,8 +43,10 @@ fun AppNavigation(authVM: AuthViewModel, productVM: ProductViewModel) {
         Screen.HOME -> HomeScreen(
             products = productVM.products.collectAsState().value,
             isAdmin = currentUser?.isAdmin == true,
+            username = currentUser?.username ?: "",
             onLogout = { authVM.logout() },
             onAdmin = { screen = Screen.ADMIN_LIST },
+            onEditProfile = { /* TODO: pantalla de editar perfil en V2 */ },
             onProductClick = { id ->
                 selectedId = id
                 screen = Screen.PRODUCT_DETAIL
@@ -98,5 +101,15 @@ fun AppNavigation(authVM: AuthViewModel, productVM: ProductViewModel) {
             },
             onBack = { screen = Screen.ADMIN_LIST }
         )
+    }
+
+    BackHandler(enabled = screen != Screen.LOGIN && screen != Screen.HOME) {
+        screen = when (screen) {
+            Screen.REGISTER -> Screen.LOGIN
+            Screen.PRODUCT_DETAIL -> Screen.HOME
+            Screen.ADMIN_LIST -> Screen.HOME
+            Screen.ADMIN_ADD, Screen.ADMIN_EDIT -> Screen.ADMIN_LIST
+            else -> screen
+        }
     }
 }
