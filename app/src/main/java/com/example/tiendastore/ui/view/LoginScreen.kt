@@ -25,7 +25,7 @@ fun LoginScreen(
     onLogin: (String, String) -> Unit,
     onGoRegister: () -> Unit
 ) {
-    var username by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
     Column(
@@ -39,14 +39,14 @@ fun LoginScreen(
         Spacer(Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = username,
-            onValueChange = { username = it },
-            label = { Text("Usuario") },
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("Correo") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
-        AnimatedVisibility(visible = uiState.errors["username"] != null) {
-            Text(uiState.errors["username"] ?: "", color = MaterialTheme.colorScheme.error)
+        AnimatedVisibility(visible = uiState.errors["email"] != null) {
+            Text(uiState.errors["email"] ?: "", color = MaterialTheme.colorScheme.error)
         }
         Spacer(Modifier.height(8.dp))
         OutlinedTextField(
@@ -62,7 +62,7 @@ fun LoginScreen(
         }
 
         Spacer(Modifier.height(16.dp))
-        Button(onClick = { onLogin(username, password) }, modifier = Modifier.fillMaxWidth()) {
+        Button(onClick = { onLogin(email, password) }, modifier = Modifier.fillMaxWidth()) {
             Text("Ingresar")
         }
         Spacer(Modifier.height(8.dp))
@@ -76,4 +76,3 @@ fun LoginScreen(
         }
     }
 }
-

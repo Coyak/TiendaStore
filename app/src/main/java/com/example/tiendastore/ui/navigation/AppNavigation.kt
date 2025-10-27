@@ -17,7 +17,7 @@ import com.example.tiendastore.ui.view.RegisterScreen
 import com.example.tiendastore.viewmodel.AuthViewModel
 import com.example.tiendastore.viewmodel.ProductViewModel
 
-enum class Screen { LOGIN, REGISTER, HOME, PRODUCT_DETAIL, ADMIN_LIST, ADMIN_ADD, ADMIN_EDIT }
+enum class Screen { LOGIN, REGISTER, HOME, PRODUCT_DETAIL, EDIT_PROFILE, ADMIN_LIST, ADMIN_ADD, ADMIN_EDIT }
 
 @Composable
 fun AppNavigation(authVM: AuthViewModel, productVM: ProductViewModel) {
@@ -32,21 +32,21 @@ fun AppNavigation(authVM: AuthViewModel, productVM: ProductViewModel) {
     when (screen) {
         Screen.LOGIN -> LoginScreen(
             uiState = authVM.ui.collectAsState().value,
-            onLogin = { u, p -> authVM.login(u, p) },
+            onLogin = { email, p -> authVM.login(email, p) },
             onGoRegister = { screen = Screen.REGISTER }
         )
         Screen.REGISTER -> RegisterScreen(
             uiState = authVM.ui.collectAsState().value,
-            onRegister = { u, p, isAdmin -> authVM.register(u, p, isAdmin) },
+            onRegister = { name, email, password, isAdmin -> authVM.register(name, email, password, isAdmin) },
             onBack = { screen = Screen.LOGIN }
         )
         Screen.HOME -> HomeScreen(
             products = productVM.products.collectAsState().value,
             isAdmin = currentUser?.isAdmin == true,
-            username = currentUser?.username ?: "",
+            displayName = authVM.profile.collectAsState().value?.name ?: "",
             onLogout = { authVM.logout() },
             onAdmin = { screen = Screen.ADMIN_LIST },
-            onEditProfile = { /* TODO: pantalla de editar perfil en V2 */ },
+            onEditProfile = { screen = Screen.EDIT_PROFILE },
             onProductClick = { id ->
                 selectedId = id
                 screen = Screen.PRODUCT_DETAIL
@@ -57,6 +57,15 @@ fun AppNavigation(authVM: AuthViewModel, productVM: ProductViewModel) {
             val product = products.firstOrNull { it.id == selectedId }
             com.example.tiendastore.ui.view.ProductDetailScreen(
                 product = product,
+                onBack = { screen = Screen.HOME }
+            )
+        }
+        Screen.EDIT_PROFILE -> {
+            val user = authVM.profile.collectAsState().value
+            com.example.tiendastore.ui.view.EditProfileScreen(
+                user = user,
+                errors = authVM.ui.collectAsState().value.errors,
+                onSave = { name, email, address, city -> authVM.updateProfile(name, email, address, city) },
                 onBack = { screen = Screen.HOME }
             )
         }

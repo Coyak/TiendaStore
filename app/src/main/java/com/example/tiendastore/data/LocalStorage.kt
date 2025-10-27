@@ -80,8 +80,12 @@ object LocalStorage {
             val username = obj.optString("username", "")
             val password = obj.optString("password", "")
             val isAdmin = obj.optBoolean("isAdmin", false)
+            val name = obj.optString("name", "")
+            val email = obj.optString("email", "")
+            val address = obj.optString("address", "")
+            val city = obj.optString("city", "")
             if (username.isNotBlank()) {
-                list.add(User(username, password, isAdmin))
+                list.add(User(username, password, isAdmin, name, email, address, city))
             }
         }
         return list
@@ -94,6 +98,10 @@ object LocalStorage {
             obj.put("username", u.username)
             obj.put("password", u.password)
             obj.put("isAdmin", u.isAdmin)
+            obj.put("name", u.name)
+            obj.put("email", u.email)
+            obj.put("address", u.address)
+            obj.put("city", u.city)
             arr.put(obj)
         }
         return arr.toString()
@@ -112,7 +120,8 @@ object LocalStorage {
                     price = obj.optDouble("price", 0.0),
                     stock = obj.optInt("stock", 0),
                     category = obj.optString("category", "Otros"),
-                    description = obj.optString("description", "")
+                    description = obj.optString("description", ""),
+                    imagePath = obj.optString("imagePath", null)
                 )
             )
         }
@@ -129,6 +138,7 @@ object LocalStorage {
             obj.put("stock", p.stock)
             obj.put("category", p.category)
             obj.put("description", p.description)
+            obj.put("imagePath", p.imagePath)
             arr.put(obj)
         }
         return arr.toString()

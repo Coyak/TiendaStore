@@ -3,6 +3,8 @@ package com.example.tiendastore.ui.view
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -22,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.example.tiendastore.model.Product
 import java.text.NumberFormat
 import java.util.Locale
+import com.example.tiendastore.ui.view.components.ImageFromPath
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,6 +47,8 @@ fun ProductDetailScreen(product: Product?, onBack: () -> Unit) {
             }
 
             // Título y precio destacado
+            ImageFromPath(product.imagePath, Modifier.fillMaxWidth().aspectRatio(1f))
+            Spacer(Modifier.padding(8.dp))
             Text(product.name, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.SemiBold)
             Spacer(Modifier.padding(4.dp))
             Text(formatPriceCLP(product.price), style = MaterialTheme.typography.titleLarge)
@@ -77,4 +82,3 @@ private fun formatPriceCLP(price: Double): String {
     nf.minimumFractionDigits = 0
     return "$" + nf.format(price)
 }
-

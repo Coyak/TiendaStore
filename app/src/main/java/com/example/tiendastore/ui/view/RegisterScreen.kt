@@ -24,10 +24,11 @@ import com.example.tiendastore.viewmodel.AuthUiState
 @Composable
 fun RegisterScreen(
     uiState: AuthUiState,
-    onRegister: (String, String, Boolean) -> Unit,
+    onRegister: (String, String, String, Boolean) -> Unit,
     onBack: () -> Unit
 ) {
-    var username by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var repeat by remember { mutableStateOf("") }
     var isAdmin by remember { mutableStateOf(false) }
@@ -44,14 +45,25 @@ fun RegisterScreen(
         Spacer(Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = username,
-            onValueChange = { username = it },
-            label = { Text("Usuario") },
+            value = name,
+            onValueChange = { name = it },
+            label = { Text("Nombre") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
-        AnimatedVisibility(visible = uiState.errors["username"] != null) {
-            Text(uiState.errors["username"] ?: "", color = MaterialTheme.colorScheme.error)
+        AnimatedVisibility(visible = uiState.errors["name"] != null) {
+            Text(uiState.errors["name"] ?: "", color = MaterialTheme.colorScheme.error)
+        }
+        Spacer(Modifier.height(8.dp))
+        OutlinedTextField(
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("Correo") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
+        AnimatedVisibility(visible = uiState.errors["email"] != null) {
+            Text(uiState.errors["email"] ?: "", color = MaterialTheme.colorScheme.error)
         }
         Spacer(Modifier.height(8.dp))
         OutlinedTextField(
@@ -88,7 +100,7 @@ fun RegisterScreen(
         Button(
             onClick = {
                 localError = if (password != repeat) "Las contraseñas no coinciden" else null
-                if (localError == null) onRegister(username, password, isAdmin)
+                if (localError == null) onRegister(name, email, password, isAdmin)
             },
             modifier = Modifier.fillMaxWidth()
         ) { Text("Registrar") }
@@ -102,4 +114,3 @@ fun RegisterScreen(
         }
     }
 }
-

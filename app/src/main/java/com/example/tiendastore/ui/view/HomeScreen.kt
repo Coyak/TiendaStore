@@ -8,8 +8,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.Arrangement as ColArrangement
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AdminPanelSettings
 import androidx.compose.material.icons.filled.Edit
@@ -43,7 +47,7 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     products: List<Product>,
     isAdmin: Boolean,
-    username: String,
+    displayName: String,
     onLogout: () -> Unit,
     onAdmin: () -> Unit,
     onEditProfile: () -> Unit,
@@ -57,7 +61,7 @@ fun HomeScreen(
         drawerContent = {
             ModalDrawerSheet {
                 Text(
-                    text = "Hola, $username",
+                    text = if (displayName.isNotBlank()) "Hola, $displayName" else "Hola",
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(16.dp)
                 )
@@ -115,22 +119,24 @@ fun HomeScreen(
                 Spacer(Modifier.height(8.dp))
                 Divider()
                 Spacer(Modifier.height(8.dp))
-                LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    items(products) { p ->
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { onProductClick(p.id) }
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    horizontalArrangement = ColArrangement.spacedBy(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(products, key = { it.id }) { p ->
+                        androidx.compose.material3.Card(
+                            onClick = { onProductClick(p.id) }
                         ) {
-                            Text(p.name, style = MaterialTheme.typography.titleMedium)
-                            Text("Precio: ${formatPriceCLP(p.price)}")
-                            Text("Stock: ${p.stock}")
-                            Text("Categoría: ${p.category}")
-                            if (p.description.isNotBlank()) {
-                                Text(p.description, style = MaterialTheme.typography.bodySmall)
+                            com.example.tiendastore.ui.view.components.ImageFromPath(
+                                p.imagePath,
+                                Modifier.fillMaxWidth().aspectRatio(1f)
+                            )
+                            Column(modifier = Modifier.padding(8.dp)) {
+                                Text(p.name, style = MaterialTheme.typography.bodyMedium, maxLines = 1)
+                                Text("${formatPriceCLP(p.price)}", style = MaterialTheme.typography.bodySmall)
                             }
                         }
-                        Divider(modifier = Modifier.padding(vertical = 8.dp))
                     }
                 }
             }

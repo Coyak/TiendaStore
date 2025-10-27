@@ -26,14 +26,24 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val _currentUser = MutableStateFlow<User?>(null)
     val currentUser: StateFlow<User?> = _currentUser.asStateFlow()
 
+    private val _profile = MutableStateFlow<User?>(null)
+    val profile: StateFlow<User?> = _profile.asStateFlow()
+
     private val _ui = MutableStateFlow(AuthUiState())
     val ui: StateFlow<AuthUiState> = _ui.asStateFlow()
 
     init {
-        // Observe current user
+        // Observe current user (session)
         viewModelScope.launch {
             LocalStorage.currentUserFlow(appContext).collectLatest { user ->
                 _currentUser.value = user
+                refreshProfile()
+            }
+        }
+        // Observe users to build full profile when session changes
+        viewModelScope.launch {
+            LocalStorage.usersFlow(appContext).collectLatest {
+                refreshProfile()
             }
         }
         // Hydrate default admin if needed
@@ -44,10 +54,11 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         _ui.value = _ui.value.copy(errors = emptyMap(), message = null)
     }
 
-    fun login(username: String, password: String) {
+    fun login(email: String, password: String) {
         viewModelScope.launch {
             val errors = mutableMapOf<String, String>()
-            if (username.trim().length < 3) errors["username"] = "Usuario mínimo 3 caracteres"
+            val e = email.trim()
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(e).matches()) errors["email"] = "Correo inválido"
             if (password.length < 6) errors["password"] = "Contraseña mínima 6 caracteres"
             if (errors.isNotEmpty()) {
                 _ui.value = _ui.value.copy(errors = errors, message = null)
@@ -55,7 +66,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             }
 
             val users = LocalStorage.usersFlow(appContext).first()
-            val found = users.firstOrNull { it.username == username && it.password == password }
+            val found = users.firstOrNull { it.email.equals(e, ignoreCase = true) && it.password == password }
             if (found != null) {
                 LocalStorage.setCurrentUser(appContext, found)
                 _ui.value = _ui.value.copy(errors = emptyMap(), message = null)
@@ -65,16 +76,18 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun register(username: String, password: String, isAdmin: Boolean) {
+    fun register(name: String, email: String, password: String, isAdmin: Boolean) {
         viewModelScope.launch {
             val errors = mutableMapOf<String, String>()
-            val u = username.trim()
-            if (u.length < 3) errors["username"] = "Usuario mínimo 3 caracteres"
+            val n = name.trim()
+            val e = email.trim()
+            if (n.length < 3) errors["name"] = "Nombre mínimo 3 caracteres"
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(e).matches()) errors["email"] = "Correo inválido"
             if (password.length < 6) errors["password"] = "Contraseña mínima 6 caracteres"
 
             val users = LocalStorage.usersFlow(appContext).first()
-            if (users.any { it.username == u }) {
-                errors["username"] = "Usuario ya existe"
+            if (users.any { it.email.equals(e, ignoreCase = true) }) {
+                errors["email"] = "Correo ya registrado"
             }
 
             if (errors.isNotEmpty()) {
@@ -82,7 +95,8 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                 return@launch
             }
 
-            val updated = users + User(u, password, isAdmin)
+            // Por compatibilidad, usamos username = email
+            val updated = users + User(username = e, password = password, isAdmin = isAdmin, name = n, email = e)
             LocalStorage.saveUsers(appContext, updated)
             _ui.value = _ui.value.copy(errors = emptyMap(), message = "Cuenta creada, ahora ingresa")
         }
@@ -98,9 +112,51 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         // Ensure admin user exists if users empty
         val users = LocalStorage.usersFlow(appContext).first()
         if (users.isEmpty()) {
-            val admin = User(username = "admin", password = "admin123", isAdmin = true)
+            val admin = User(username = "admin", password = "admin123", isAdmin = true, name = "Admin", email = "admin@local")
             LocalStorage.saveUsers(appContext, listOf(admin))
         }
+    }
+
+    fun updateProfile(name: String, email: String, address: String, city: String) {
+        viewModelScope.launch {
+            val current = _currentUser.value ?: return@launch
+            val errors = mutableMapOf<String, String>()
+            val n = name.trim()
+            val e = email.trim()
+            if (n.length < 3) errors["name"] = "Nombre mínimo 3 caracteres"
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(e).matches()) errors["email"] = "Correo inválido"
+
+            val users = LocalStorage.usersFlow(appContext).first()
+            if (users.any { it.email.equals(e, ignoreCase = true) && it.username != current.username }) {
+                errors["email"] = "Correo ya registrado"
+            }
+            if (errors.isNotEmpty()) {
+                _ui.value = _ui.value.copy(errors = errors)
+                return@launch
+            }
+
+            val updated = users.map { u ->
+                if (u.username == current.username) u.copy(
+                    name = n,
+                    email = e,
+                    address = address.trim(),
+                    city = city.trim(),
+                    username = e // mantener username=email para consistencia
+                ) else u
+            }
+            LocalStorage.saveUsers(appContext, updated)
+            // Actualizar sesión
+            val newCurrent = updated.first { it.email.equals(e, true) }
+            LocalStorage.setCurrentUser(appContext, newCurrent)
+            _ui.value = _ui.value.copy(message = "Perfil actualizado")
+        }
+    }
+
+    private suspend fun refreshProfile() {
+        val session = _currentUser.value ?: run { _profile.value = null; return }
+        val users = LocalStorage.usersFlow(appContext).first()
+        val full = users.firstOrNull { it.username == session.username || it.email == session.username }
+        _profile.value = full ?: session
     }
 }
 

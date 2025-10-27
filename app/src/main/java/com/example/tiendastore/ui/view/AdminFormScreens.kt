@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,6 +36,24 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.background
+import androidx.compose.ui.platform.LocalContext
+import com.example.tiendastore.ui.view.components.ImageFromPath
+import com.example.tiendastore.ui.view.components.ImageFromUri
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.TextButton
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -87,6 +106,74 @@ private fun AdminFormScaffold(
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp)
         ) {
+            val context = LocalContext.current
+            var confirmChange by remember { mutableStateOf(false) }
+            var pendingImage by remember { mutableStateOf<String?>(null) }
+            val picker = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+                if (uri != null) {
+                    pendingImage = uri.toString()
+                    confirmChange = true
+                }
+            }
+
+            // Imagen editable como tarjeta clicable
+            Card(
+                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f)
+                    .clickable { picker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) }
+            ) {
+                Box(Modifier.fillMaxSize()) {
+                    val hasContentUri = form.imagePath.startsWith("content:")
+                    if (hasContentUri) {
+                        ImageFromUri(form.imagePath, Modifier.fillMaxSize())
+                    } else {
+                        ImageFromPath(form.imagePath.ifBlank { null }, Modifier.fillMaxSize())
+                    }
+                    // Overlay sutil con icono editar
+                    Row(
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .fillMaxWidth()
+                            .background(Color.Black.copy(alpha = 0.25f))
+                            .padding(vertical = 6.dp, horizontal = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(Icons.Default.Edit, contentDescription = null, tint = Color.White)
+                        Spacer(Modifier.width(6.dp))
+                        Text("Cambiar imagen", color = Color.White)
+                    }
+                }
+            }
+
+            if (confirmChange && pendingImage != null) {
+                AlertDialog(
+                    onDismissRequest = { confirmChange = false },
+                    title = { Text("Confirmar cambio de imagen") },
+                    text = {
+                        Column {
+                            Text("Se reemplazará la imagen actual por la seleccionada.")
+                            Spacer(Modifier.height(8.dp))
+                            // Previsualización de la nueva imagen cuadrada
+                            ImageFromUri(pendingImage, Modifier.fillMaxWidth().aspectRatio(1f))
+                        }
+                    },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            onChange("imagePath", pendingImage!!)
+                            confirmChange = false
+                            pendingImage = null
+                        }) { Text("Reemplazar") }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { confirmChange = false; pendingImage = null }) { Text("Cancelar") }
+                    }
+                )
+            }
+
+            Spacer(Modifier.height(16.dp))
             OutlinedTextField(
                 value = form.name,
                 onValueChange = { onChange("name", it) },
