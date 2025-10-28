@@ -14,13 +14,15 @@ import com.example.tiendastore.ui.view.AdminListScreen
 import com.example.tiendastore.ui.view.HomeScreen
 import com.example.tiendastore.ui.view.LoginScreen
 import com.example.tiendastore.ui.view.RegisterScreen
+import com.example.tiendastore.ui.view.CartCheckoutScreen
 import com.example.tiendastore.viewmodel.AuthViewModel
 import com.example.tiendastore.viewmodel.ProductViewModel
+import com.example.tiendastore.viewmodel.CartViewModel
 
-enum class Screen { LOGIN, REGISTER, HOME, PRODUCT_DETAIL, EDIT_PROFILE, ADMIN_LIST, ADMIN_ADD, ADMIN_EDIT }
+enum class Screen { LOGIN, REGISTER, HOME, PRODUCT_DETAIL, EDIT_PROFILE, CART_CHECKOUT, ADMIN_LIST, ADMIN_ADD, ADMIN_EDIT }
 
 @Composable
-fun AppNavigation(authVM: AuthViewModel, productVM: ProductViewModel) {
+fun AppNavigation(authVM: AuthViewModel, productVM: ProductViewModel, cartVM: CartViewModel) {
     var screen by remember { mutableStateOf(Screen.LOGIN) }
     var selectedId by remember { mutableStateOf<Int?>(null) }
     val currentUser by authVM.currentUser.collectAsState()
@@ -50,13 +52,41 @@ fun AppNavigation(authVM: AuthViewModel, productVM: ProductViewModel) {
             onProductClick = { id ->
                 selectedId = id
                 screen = Screen.PRODUCT_DETAIL
-            }
+            },
+            cartCount = cartVM.totalItems.collectAsState().value,
+            cartItems = cartVM.items.collectAsState().value,
+            cartTotal = cartVM.totalPrice.collectAsState().value,
+            onCartChangeQty = { id, q -> cartVM.changeQty(id, q) },
+            onCartRemove = { id -> cartVM.remove(id) },
+            onGoCheckout = { screen = Screen.CART_CHECKOUT }
         )
         Screen.PRODUCT_DETAIL -> {
             val products = productVM.products.collectAsState().value
             val product = products.firstOrNull { it.id == selectedId }
             com.example.tiendastore.ui.view.ProductDetailScreen(
                 product = product,
+                onBack = { screen = Screen.HOME },
+                onAddToCart = { p -> if (p != null) cartVM.add(p, 1) },
+                cartCount = cartVM.totalItems.collectAsState().value,
+                cartItems = cartVM.items.collectAsState().value,
+                cartTotal = cartVM.totalPrice.collectAsState().value,
+                onCartChangeQty = { id, q -> cartVM.changeQty(id, q) },
+                onCartRemove = { id -> cartVM.remove(id) },
+                onGoCheckout = { screen = Screen.CART_CHECKOUT }
+            )
+        }
+        Screen.CART_CHECKOUT -> {
+            val items = cartVM.items.collectAsState().value
+            val total = cartVM.totalPrice.collectAsState().value
+            CartCheckoutScreen(
+                items = items,
+                total = total,
+                onChangeQty = { id, q -> cartVM.changeQty(id, q) },
+                onRemove = { id -> cartVM.remove(id) },
+                onPay = {
+                    cartVM.clear()
+                    screen = Screen.HOME
+                },
                 onBack = { screen = Screen.HOME }
             )
         }

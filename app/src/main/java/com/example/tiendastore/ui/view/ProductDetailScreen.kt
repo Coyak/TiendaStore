@@ -16,6 +16,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.Button
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import kotlinx.coroutines.launch
+import com.example.tiendastore.model.CartItem
+import androidx.compose.material.icons.filled.ShoppingCart
+import com.example.tiendastore.ui.view.components.CartQuickSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,13 +41,34 @@ import com.example.tiendastore.ui.view.components.ImageFromPath
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductDetailScreen(product: Product?, onBack: () -> Unit) {
+fun ProductDetailScreen(
+    product: Product?,
+    onBack: () -> Unit,
+    onAddToCart: (Product?) -> Unit,
+    cartCount: Int,
+    cartItems: List<CartItem>,
+    cartTotal: Double,
+    onCartChangeQty: (Int, Int) -> Unit,
+    onCartRemove: (Int) -> Unit,
+    onGoCheckout: () -> Unit
+) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    var showCart by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+
     Scaffold(topBar = {
         TopAppBar(
             title = { Text(product?.name ?: "Detalle") },
-            navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.Filled.ArrowBack, contentDescription = "Volver") } }
+            navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.Filled.ArrowBack, contentDescription = "Volver") } },
+            actions = {
+                IconButton(onClick = { showCart = true }) {
+                    BadgedBox(badge = { if (cartCount > 0) Badge { Text(cartCount.toString()) } }) {
+                        Icon(Icons.Filled.ShoppingCart, contentDescription = "Carrito")
+                    }
+                }
+            }
         )
-    }) { padding ->
+    }, snackbarHost = { SnackbarHost(snackbarHostState) }) { padding ->
         Column(
             modifier = Modifier
                 .padding(padding)
@@ -52,6 +86,19 @@ fun ProductDetailScreen(product: Product?, onBack: () -> Unit) {
             Text(product.name, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.SemiBold)
             Spacer(Modifier.padding(4.dp))
             Text(formatPriceCLP(product.price), style = MaterialTheme.typography.titleLarge)
+            Spacer(Modifier.padding(8.dp))
+            Button(onClick = {
+                onAddToCart(product)
+                scope.launch {
+                    val result = snackbarHostState.showSnackbar(
+                        message = "Producto agregado",
+                        actionLabel = "Ver carrito"
+                    )
+                    if (result == androidx.compose.material3.SnackbarResult.ActionPerformed) {
+                        showCart = true
+                    }
+                }
+            }) { Text("Agregar al carrito") }
             Spacer(Modifier.padding(8.dp))
 
             // Info principal
@@ -73,6 +120,17 @@ fun ProductDetailScreen(product: Product?, onBack: () -> Unit) {
                 modifier = Modifier.fillMaxWidth()
             )
         }
+    }
+
+    if (showCart) {
+        CartQuickSheet(
+            items = cartItems,
+            total = cartTotal,
+            onChangeQty = onCartChangeQty,
+            onRemove = onCartRemove,
+            onGoCheckout = onGoCheckout,
+            onDismiss = { showCart = false }
+        )
     }
 }
 

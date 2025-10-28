@@ -9,10 +9,12 @@ import com.example.tiendastore.ui.navigation.AppNavigation
 import com.example.tiendastore.ui.theme.TiendaStoreTheme
 import com.example.tiendastore.viewmodel.AuthViewModel
 import com.example.tiendastore.viewmodel.ProductViewModel
+import com.example.tiendastore.viewmodel.CartViewModel
 
 class MainActivity : ComponentActivity() {
     private val authVM by viewModels<AuthViewModel>()
     private val productVM by viewModels<ProductViewModel>()
+    private val cartVM by viewModels<CartViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +25,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             TiendaStoreTheme {
-                AppNavigation(authVM = authVM, productVM = productVM)
+                AppNavigation(authVM = authVM, productVM = productVM, cartVM = cartVM)
             }
         }
     }

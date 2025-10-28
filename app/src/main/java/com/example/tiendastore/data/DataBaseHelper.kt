@@ -15,6 +15,7 @@ import androidx.room.RoomDatabase
 import androidx.room.Update
 import com.example.tiendastore.model.Product
 import com.example.tiendastore.model.User
+import com.example.tiendastore.model.CartItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.Flow
@@ -41,6 +42,21 @@ data class UserEntity(
     val name: String = "",
     val address: String = "",
     val city: String = ""
+)
+
+@Entity(tableName = "session")
+data class SessionEntity(
+    @PrimaryKey val id: Int = 0,
+    val email: String
+)
+
+@Entity(tableName = "cart_items")
+data class CartItemEntity(
+    @PrimaryKey val productId: Int,
+    val name: String,
+    val price: Double,
+    val qty: Int,
+    val imagePath: String? = null
 )
 
 // DAOs
@@ -86,15 +102,50 @@ interface UserDao {
     suspend fun update(entity: UserEntity)
 }
 
+@Dao
+interface SessionDao {
+    @Query("SELECT * FROM session WHERE id = 0")
+    fun observe(): Flow<SessionEntity?>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun set(session: SessionEntity)
+
+    @Query("DELETE FROM session")
+    suspend fun clear()
+}
+
+@Dao
+interface CartDao {
+    @Query("SELECT * FROM cart_items")
+    fun observeAll(): Flow<List<CartItemEntity>>
+
+    @Query("SELECT * FROM cart_items WHERE productId = :id")
+    suspend fun getByIdOnce(id: Int): CartItemEntity?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(entity: CartItemEntity)
+
+    @Query("UPDATE cart_items SET qty = :qty WHERE productId = :id")
+    suspend fun updateQty(id: Int, qty: Int)
+
+    @Query("DELETE FROM cart_items WHERE productId = :id")
+    suspend fun deleteById(id: Int)
+
+    @Query("DELETE FROM cart_items")
+    suspend fun clear()
+}
+
 // Database
 @Database(
-    entities = [ProductEntity::class, UserEntity::class],
-    version = 1,
+    entities = [ProductEntity::class, UserEntity::class, SessionEntity::class, CartItemEntity::class],
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun productDao(): ProductDao
     abstract fun userDao(): UserDao
+    abstract fun sessionDao(): SessionDao
+    abstract fun cartDao(): CartDao
 
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null
@@ -171,6 +222,22 @@ fun User.toEntity(): UserEntity = UserEntity(
     name = name,
     address = address,
     city = city
+)
+
+fun CartItemEntity.toDomain(): CartItem = CartItem(
+    productId = productId,
+    name = name,
+    price = price,
+    qty = qty,
+    imagePath = imagePath
+)
+
+fun CartItem.toEntity(): CartItemEntity = CartItemEntity(
+    productId = productId,
+    name = name,
+    price = price,
+    qty = qty,
+    imagePath = imagePath
 )
 
 // Facade helper para operaciones comunes ligadas a imágenes
