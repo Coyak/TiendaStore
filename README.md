@@ -7,11 +7,11 @@ Aplicación de Tienda offline con Room, Jetpack Compose y ViewModel. Incluye log
 
 Tecnologías y Recursos Implementados
 -------------------
-•Lenguaje: Kotlin
-•Interfaz de Usuario: Jetpack Compose 
-•Arquitectura: MVVM (Model-View-ViewModel)
-•Base de Datos: Room (sobre SQLite) para persistencia local.
-•Gestión de Estado: StateFlow para comunicación reactiva entre UI y ViewModels.
+- Lenguaje: Kotlin
+- Interfaz de Usuario: Jetpack Compose 
+- Arquitectura: MVVM (Model-View-ViewModel)
+- Base de Datos: Room (sobre SQLite) para persistencia local.
+- Gestión de Estado: StateFlow para comunicación reactiva entre UI y ViewModels.
 
 Arquitectura (MVVM)
 -------------------
