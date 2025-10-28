@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.CircularProgressIndicator
 import java.io.File
 
 @Composable
@@ -47,7 +48,8 @@ fun ImageFromUri(uriString: String?, modifier: Modifier = Modifier, contentScale
     if (bmp != null) {
         Image(bitmap = bmp.asImageBitmap(), contentDescription = null, modifier = modifier, contentScale = contentScale)
     } else {
-        Box(modifier.background(MaterialTheme.colorScheme.surfaceVariant))
+        Box(modifier.background(MaterialTheme.colorScheme.surfaceVariant)) {
+            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary, modifier = Modifier.align(androidx.compose.ui.Alignment.Center))
+        }
     }
 }
-

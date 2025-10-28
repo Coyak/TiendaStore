@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import com.example.tiendastore.domain.validation.ProductValidator
 
 data class ProductFormState(
     val id: Int? = null,
@@ -76,19 +77,7 @@ class ProductViewModel(application: Application) : AndroidViewModel(application)
     }
 
     private fun validate(form: ProductFormState): ProductFormState {
-        val errors = mutableMapOf<String, String>()
-
-        if (form.name.trim().length < 3) errors["name"] = "Nombre mínimo 3"
-
-        val price = form.price.replace(",", ".")
-        val priceVal = price.toDoubleOrNull()
-        if (priceVal == null || priceVal <= 0.0) errors["price"] = "Precio > 0"
-
-        val stockVal = form.stock.toIntOrNull()
-        if (stockVal == null || stockVal < 0) errors["stock"] = "Stock ≥ 0"
-
-        if (!categories.contains(form.category)) errors["category"] = "Categoría inválida"
-
+        val errors = ProductValidator.validate(form.name, form.price, form.stock, form.category)
         return form.copy(errors = errors, isValid = errors.isEmpty())
     }
 

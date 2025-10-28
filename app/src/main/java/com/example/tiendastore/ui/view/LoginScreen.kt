@@ -27,6 +27,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.tiendastore.viewmodel.AuthUiState
+import com.example.tiendastore.ui.view.components.AnimatedPrimaryButton
+import com.example.tiendastore.ui.view.components.AnimatedOutlinedButton
 
 @Composable
 fun LoginScreen(
@@ -97,13 +99,9 @@ fun LoginScreen(
                 }
 
                 Spacer(Modifier.height(20.dp))
-                Button(onClick = { onLogin(email, password) }, modifier = Modifier.fillMaxWidth()) {
-                    Text("Ingresar")
-                }
+                AnimatedPrimaryButton(text = "Ingresar", onClick = { onLogin(email, password) })
                 Spacer(Modifier.height(8.dp))
-                androidx.compose.material3.OutlinedButton(onClick = onGoRegister, modifier = Modifier.fillMaxWidth()) {
-                    Text("Crear cuenta")
-                }
+                AnimatedOutlinedButton(text = "Crear cuenta", onClick = onGoRegister)
             }
         }
 

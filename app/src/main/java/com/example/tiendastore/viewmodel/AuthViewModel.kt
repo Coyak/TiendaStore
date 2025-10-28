@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import com.example.tiendastore.domain.validation.AuthValidator
 
 data class AuthUiState(
     val username: String = "",
@@ -59,17 +60,13 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
-            val errors = mutableMapOf<String, String>()
-            val e = email.trim()
-            // Relajamos validación para permitir correos tipo "admin@local"
-            if (e.isBlank() || e.length < 3) errors["email"] = "Correo inválido"
-            if (password.length < 6) errors["password"] = "Contraseña mínima 6 caracteres"
+            val errors = AuthValidator.validateLogin(email, password)
             if (errors.isNotEmpty()) {
                 _ui.value = _ui.value.copy(errors = errors, message = null)
                 return@launch
             }
 
-            val found = DataBaseHelper.db(appContext).userDao().getByEmail(e)
+            val found = DataBaseHelper.db(appContext).userDao().getByEmail(email.trim())
             if (found != null) {
                 if (found.password != password) {
                     _ui.value = _ui.value.copy(message = "Credenciales inválidas", errors = emptyMap())
@@ -85,12 +82,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     fun register(name: String, email: String, password: String, isAdmin: Boolean) {
         viewModelScope.launch {
-            val errors = mutableMapOf<String, String>()
             val n = name.trim()
             val e = email.trim()
-            if (n.length < 3) errors["name"] = "Nombre mínimo 3 caracteres"
-            if (e.isBlank() || e.length < 3) errors["email"] = "Correo inválido"
-            if (password.length < 6) errors["password"] = "Contraseña mínima 6 caracteres"
+            val errors = AuthValidator.validateRegister(n, e, password, password).toMutableMap()
 
             val users = DataBaseHelper.db(appContext).userDao().observeAll().first()
             if (users.any { it.email.equals(e, ignoreCase = true) }) {
