@@ -58,7 +58,7 @@ fun ProductDetailScreen(
 
     Scaffold(topBar = {
         TopAppBar(
-            title = { Text(product?.name ?: "Detalle") },
+            title = { Text("TiendaStore") },
             navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.Filled.ArrowBack, contentDescription = "Volver") } },
             actions = {
                 IconButton(onClick = { showCart = true }) {
