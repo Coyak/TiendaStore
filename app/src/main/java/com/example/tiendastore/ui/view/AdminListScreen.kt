@@ -29,7 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.tiendastore.model.Product
+import com.example.tiendastore.model.Producto
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
@@ -39,13 +39,13 @@ import androidx.compose.material3.Divider
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminListScreen(
-    products: List<Product>,
+    products: List<Producto>,
     onAdd: () -> Unit,
-    onEdit: (Int) -> Unit,
-    onDelete: (Int) -> Unit,
+    onEdit: (Long) -> Unit,
+    onDelete: (Long) -> Unit,
     onBack: () -> Unit
 ) {
-    var pendingDeleteId by remember { mutableStateOf<Int?>(null) }
+    var pendingDeleteId by remember { mutableStateOf<Long?>(null) }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -110,16 +110,17 @@ fun AdminListScreen(
 }
 
 @Composable
-private fun ProductListItem(product: Product, onEdit: () -> Unit, onDelete: () -> Unit) {
+private fun ProductListItem(product: Producto, onEdit: () -> Unit, onDelete: () -> Unit) {
     androidx.compose.material3.ListItem(
-        headlineContent = { Text(product.name, style = MaterialTheme.typography.titleMedium) },
+        headlineContent = { Text(product.nombre, style = MaterialTheme.typography.titleMedium) },
         supportingContent = {
-            Text("${product.category} • ${product.stock} uds • ${formatPriceCLP(product.price)}")
+            Text("${product.stock} uds • ${formatPriceCLP(product.precio)}")
         },
         leadingContent = {
             com.example.tiendastore.ui.view.components.ImageFromPath(
-                product.imagePath,
-                Modifier.size(56.dp)
+                product.imagenUrl,
+                Modifier.size(56.dp),
+                name = product.nombre
             )
         },
         trailingContent = {

@@ -1,0 +1,72 @@
+> Task :app:clean
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:checkDebugAarMetadata
+> Task :app:processDebugNavigationResources
+> Task :app:compileDebugNavigationResources
+> Task :app:generateDebugResValues
+> Task :app:mapDebugSourceSetPaths
+> Task :app:generateDebugResources
+> Task :app:packageDebugResources
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksDebug
+> Task :app:parseDebugLocalResources
+> Task :app:processDebugMainManifest
+> Task :app:processDebugManifest
+> Task :app:mergeDebugResources
+> Task :app:mergeDebugShaders
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:javaPreCompileDebug
+> Task :app:mergeDebugAssets
+> Task :app:compressDebugAssets
+> Task :app:desugarDebugFileDependencies
+> Task :app:mergeDebugJniLibFolders
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugNativeLibs
+> Task :app:validateSigningDebug
+> Task :app:mergeLibDexDebug
+
+> Task :app:stripDebugDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so. Run with --info option to learn more.
+
+> Task :app:writeDebugAppMetadata
+> Task :app:writeDebugSigningConfigVersions
+> Task :app:processDebugManifestForPackage
+> Task :app:processDebugResources
+
+> Task :app:kaptGenerateStubsDebugKotlin
+w: Kapt currently doesn't support language version 2.0+. Falling back to 1.9.
+
+> Task :app:mergeExtDexDebug
+> Task :app:kaptDebugKotlin
+
+> Task :app:compileDebugKotlin
+w: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/view/AdminFormScreens.kt:93:82 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
+w: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/view/AdminListScreen.kt:54:71 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
+w: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/view/AdminListScreen.kt:88:17 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/view/AdminListScreen.kt:142:65 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/view/CartCheckoutScreen.kt:52:82 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
+w: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/view/CartCheckoutScreen.kt:107:45 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/view/EditProfileScreen.kt:43:82 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
+w: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/view/HomeScreen.kt:84:17 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/view/HomeScreen.kt:113:49 'val Icons.Filled.ExitToApp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ExitToApp.
+w: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/view/HomeScreen.kt:145:17 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/view/HomeScreen.kt:184:45 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/view/ProductDetailScreen.kt:62:81 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
+w: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/view/ProductDetailScreen.kt:137:45 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/view/components/CartQuickSheet.kt:96:45 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+
+> Task :app:compileDebugJavaWithJavac
+> Task :app:processDebugJavaRes
+> Task :app:dexBuilderDebug
+> Task :app:mergeProjectDexDebug
+> Task :app:mergeDebugJavaResource
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+
+BUILD SUCCESSFUL in 16s
+40 actionable tasks: 40 executed

@@ -7,7 +7,7 @@ import com.example.tiendastore.data.DataBaseHelper
 import com.example.tiendastore.data.toDomain
 import com.example.tiendastore.data.toEntity
 import com.example.tiendastore.model.CartItem
-import com.example.tiendastore.model.Product
+import com.example.tiendastore.model.Producto
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -41,26 +41,26 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun add(product: Product, qty: Int = 1) {
+    fun add(product: Producto, qty: Int = 1) {
         viewModelScope.launch {
             val dao = DataBaseHelper.db(app).cartDao()
             val existing = dao.getByIdOnce(product.id)
             if (existing != null) {
                 dao.updateQty(product.id, (existing.qty + qty).coerceAtLeast(1))
             } else {
-                dao.upsert(CartItem(product.id, product.name, product.price, qty.coerceAtLeast(1), product.imagePath).toEntity())
+                dao.upsert(CartItem(product.id, product.nombre, product.precio, qty.coerceAtLeast(1), product.imagenUrl).toEntity())
             }
         }
     }
 
-    fun changeQty(productId: Int, qty: Int) {
+    fun changeQty(productId: Long, qty: Int) {
         if (qty <= 0) return
         viewModelScope.launch {
             DataBaseHelper.db(app).cartDao().updateQty(productId, qty)
         }
     }
 
-    fun remove(productId: Int) {
+    fun remove(productId: Long) {
         viewModelScope.launch {
             DataBaseHelper.db(app).cartDao().deleteById(productId)
         }

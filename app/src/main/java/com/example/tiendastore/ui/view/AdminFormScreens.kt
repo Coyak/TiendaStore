@@ -32,16 +32,10 @@ import androidx.compose.ui.unit.dp
 import com.example.tiendastore.viewmodel.ProductFormState
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.background
 import androidx.compose.ui.platform.LocalContext
 import com.example.tiendastore.ui.view.components.ImageFromPath
@@ -71,9 +65,9 @@ fun AdminAddScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminEditScreen(
-    id: Int?,
+    id: Long?,
     form: ProductFormState,
-    onStart: (Int?) -> Unit,
+    onStart: (Long?) -> Unit,
     onChange: (String, String) -> Unit,
     onSave: () -> Unit,
     onCancel: () -> Unit,
@@ -130,7 +124,7 @@ private fun AdminFormScaffold(
                     if (hasContentUri) {
                         ImageFromUri(form.imagePath, Modifier.fillMaxSize())
                     } else {
-                        ImageFromPath(form.imagePath.ifBlank { null }, Modifier.fillMaxSize())
+                        ImageFromPath(form.imagePath.ifBlank { null }, Modifier.fillMaxSize(), name = form.name)
                     }
                     // Overlay sutil con icono editar
                     Row(
@@ -207,12 +201,6 @@ private fun AdminFormScaffold(
             }
             Spacer(Modifier.height(8.dp))
 
-            CategoryDropdown(selected = form.category, onSelected = { onChange("category", it) })
-            AnimatedVisibility(visible = form.errors["category"] != null) {
-                Text(form.errors["category"] ?: "", color = MaterialTheme.colorScheme.error)
-            }
-            Spacer(Modifier.height(8.dp))
-
             OutlinedTextField(
                 value = form.description,
                 onValueChange = { onChange("description", it) },
@@ -232,33 +220,5 @@ private fun RowButtons(onSave: () -> Unit, onCancel: () -> Unit, enabled: Boolea
         Button(onClick = onSave, enabled = enabled) { Text("Guardar") }
         Spacer(Modifier.width(8.dp))
         Button(onClick = onCancel) { Text("Cancelar") }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun CategoryDropdown(selected: String, onSelected: (String) -> Unit) {
-    var expanded by remember { mutableStateOf(false) }
-    val options = listOf("Consolas", "Juegos", "Accesorios", "Otros")
-
-    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
-        OutlinedTextField(
-            value = selected,
-            onValueChange = {},
-            readOnly = true,
-            label = { Text("Categoría") },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier
-                .menuAnchor()
-                .fillMaxWidth()
-        )
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            options.forEach { opt ->
-                DropdownMenuItem(text = { Text(opt) }, onClick = {
-                    onSelected(opt)
-                    expanded = false
-                })
-            }
-        }
     }
 }

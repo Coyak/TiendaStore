@@ -43,7 +43,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.tiendastore.model.Product
+import com.example.tiendastore.model.Producto
 import java.text.NumberFormat
 import java.util.Locale
 import kotlinx.coroutines.launch
@@ -54,18 +54,18 @@ import com.example.tiendastore.ui.view.components.CartQuickSheet
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    products: List<Product>,
+    products: List<Producto>,
     isAdmin: Boolean,
     displayName: String,
     onLogout: () -> Unit,
     onAdmin: () -> Unit,
     onEditProfile: () -> Unit,
-    onProductClick: (Int) -> Unit,
+    onProductClick: (Long) -> Unit,
     cartCount: Int,
     cartItems: List<CartItem>,
     cartTotal: Double,
-    onCartChangeQty: (Int, Int) -> Unit,
-    onCartRemove: (Int) -> Unit,
+    onCartChangeQty: (Long, Int) -> Unit,
+    onCartRemove: (Long) -> Unit,
     onGoCheckout: () -> Unit
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -154,12 +154,13 @@ fun HomeScreen(
                             onClick = { onProductClick(p.id) }
                         ) {
                             com.example.tiendastore.ui.view.components.ImageFromPath(
-                                p.imagePath,
-                                Modifier.fillMaxWidth().aspectRatio(1f)
+                                p.imagenUrl,
+                                Modifier.fillMaxWidth().aspectRatio(1f),
+                                name = p.nombre
                             )
                             Column(modifier = Modifier.padding(8.dp)) {
-                                Text(p.name, style = MaterialTheme.typography.bodyMedium, maxLines = 1)
-                                Text("${formatPriceCLP(p.price)}", style = MaterialTheme.typography.bodySmall)
+                                Text(p.nombre, style = MaterialTheme.typography.bodyMedium, maxLines = 1)
+                                Text("${formatPriceCLP(p.precio)}", style = MaterialTheme.typography.bodySmall)
                             }
                         }
                     }

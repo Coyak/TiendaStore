@@ -40,8 +40,8 @@ import java.util.Locale
 fun CartCheckoutScreen(
     items: List<CartItem>,
     total: Double,
-    onChangeQty: (Int, Int) -> Unit,
-    onRemove: (Int) -> Unit,
+    onChangeQty: (Long, Int) -> Unit,
+    onRemove: (Long) -> Unit,
     onPay: () -> Unit,
     onBack: () -> Unit
 ) {

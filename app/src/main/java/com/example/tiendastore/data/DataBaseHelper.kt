@@ -13,8 +13,8 @@ import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.Update
-import com.example.tiendastore.model.Product
-import com.example.tiendastore.model.User
+import com.example.tiendastore.model.Producto
+import com.example.tiendastore.model.Usuario
 import com.example.tiendastore.model.CartItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -25,11 +25,10 @@ import java.io.FileOutputStream
 // Entities
 @Entity(tableName = "products")
 data class ProductEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val name: String,
     val price: Double,
     val stock: Int,
-    val category: String,
     val description: String = "",
     val imagePath: String? = null
 )
@@ -52,7 +51,7 @@ data class SessionEntity(
 
 @Entity(tableName = "cart_items")
 data class CartItemEntity(
-    @PrimaryKey val productId: Int,
+    @PrimaryKey val productId: Long,
     val name: String,
     val price: Double,
     val qty: Int,
@@ -66,10 +65,10 @@ interface ProductDao {
     fun observeAll(): Flow<List<ProductEntity>>
 
     @Query("SELECT * FROM products WHERE id = :id")
-    fun observeById(id: Int): Flow<ProductEntity?>
+    fun observeById(id: Long): Flow<ProductEntity?>
 
     @Query("SELECT * FROM products WHERE id = :id LIMIT 1")
-    suspend fun getByIdOnce(id: Int): ProductEntity?
+    suspend fun getByIdOnce(id: Long): ProductEntity?
 
     @Query("SELECT * FROM products WHERE CAST(id AS TEXT) LIKE '%' || :idQuery || '%' ORDER BY id ASC")
     fun searchByIdLike(idQuery: String): Flow<List<ProductEntity>>
@@ -84,7 +83,7 @@ interface ProductDao {
     suspend fun delete(entity: ProductEntity)
 
     @Query("DELETE FROM products WHERE id = :id")
-    suspend fun deleteById(id: Int)
+    suspend fun deleteById(id: Long)
 }
 
 @Dao
@@ -120,16 +119,16 @@ interface CartDao {
     fun observeAll(): Flow<List<CartItemEntity>>
 
     @Query("SELECT * FROM cart_items WHERE productId = :id")
-    suspend fun getByIdOnce(id: Int): CartItemEntity?
+    suspend fun getByIdOnce(id: Long): CartItemEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(entity: CartItemEntity)
 
     @Query("UPDATE cart_items SET qty = :qty WHERE productId = :id")
-    suspend fun updateQty(id: Int, qty: Int)
+    suspend fun updateQty(id: Long, qty: Int)
 
     @Query("DELETE FROM cart_items WHERE productId = :id")
-    suspend fun deleteById(id: Int)
+    suspend fun deleteById(id: Long)
 
     @Query("DELETE FROM cart_items")
     suspend fun clear()
@@ -138,7 +137,7 @@ interface CartDao {
 // Database
 @Database(
     entities = [ProductEntity::class, UserEntity::class, SessionEntity::class, CartItemEntity::class],
-    version = 2,
+    version = 4,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -165,7 +164,7 @@ abstract class AppDatabase : RoomDatabase() {
 object ImageStorage {
     private fun dir(context: Context): File = File(context.filesDir, "images").apply { if (!exists()) mkdirs() }
 
-    suspend fun saveForProduct(context: Context, productId: Int, source: Uri): String? = withContext(Dispatchers.IO) {
+    suspend fun saveForProduct(context: Context, productId: Long, source: Uri): String? = withContext(Dispatchers.IO) {
         runCatching {
             val ext = "jpg" // simple default; si quieres, detecta MIME
             val outFile = File(dir(context), "product_${productId}.${ext}")
@@ -185,43 +184,41 @@ object ImageStorage {
 }
 
 // Mapping helpers
-fun ProductEntity.toDomain(): Product = Product(
+fun ProductEntity.toDomain(): Producto = Producto(
     id = id,
-    name = name,
-    price = price,
+    nombre = name,
+    precio = price,
     stock = stock,
-    category = category,
-    description = description,
-    imagePath = imagePath
+    descripcion = description,
+    imagenUrl = imagePath ?: ""
 )
 
-fun Product.toEntity(existingImagePath: String? = null, newImagePath: String? = null): ProductEntity = ProductEntity(
+fun Producto.toEntity(existingImagePath: String? = null, newImagePath: String? = null): ProductEntity = ProductEntity(
     id = id,
-    name = name,
-    price = price,
+    name = nombre,
+    price = precio,
     stock = stock,
-    category = category,
-    description = description,
-    imagePath = newImagePath ?: imagePath ?: existingImagePath
+    description = descripcion,
+    imagePath = newImagePath ?: imagenUrl.takeIf { it.isNotBlank() } ?: existingImagePath
 )
 
-fun UserEntity.toDomain(): User = User(
-    username = email, // mantenemos compatibilidad username=email
-    password = password,
-    isAdmin = isAdmin,
-    name = name,
+fun UserEntity.toDomain(): Usuario = Usuario(
+    id = 0, // Room doesn't store ID for user in this schema, using 0 or need to update schema
+    nombre = name,
     email = email,
-    address = address,
-    city = city
+    password = password,
+    rol = if (isAdmin) "ADMIN" else "USER",
+    direccion = address,
+    ciudad = city
 )
 
-fun User.toEntity(): UserEntity = UserEntity(
-    email = email.ifBlank { username },
+fun Usuario.toEntity(): UserEntity = UserEntity(
+    email = email,
     password = password,
-    isAdmin = isAdmin,
-    name = name,
-    address = address,
-    city = city
+    isAdmin = rol == "ADMIN",
+    name = nombre,
+    address = direccion,
+    city = ciudad
 )
 
 fun CartItemEntity.toDomain(): CartItem = CartItem(
@@ -246,17 +243,16 @@ object DataBaseHelper {
 
     suspend fun upsertProductWithOptionalImage(
         context: Context,
-        product: Product,
+        product: Producto,
         newImageUri: Uri?
-    ): Int {
+    ): Long {
         val dao = db(context).productDao()
         // Si el producto no existe aún, insertamos primero para obtener ID
-        if (product.id == 0) {
+        if (product.id == 0L) {
             val tempId = dao.insert(product.toEntity())
-            val newId = tempId.toInt()
-            val savedPath = if (newImageUri != null) ImageStorage.saveForProduct(context, newId, newImageUri) else null
-            dao.update(product.copy(id = newId).toEntity(newImagePath = savedPath))
-            return newId
+            val savedPath = if (newImageUri != null) ImageStorage.saveForProduct(context, tempId, newImageUri) else null
+            dao.update(product.copy(id = tempId, imagenUrl = savedPath ?: "").toEntity())
+            return tempId
         } else {
             val existing = dao.getByIdOnce(product.id)
             val savedPath = if (newImageUri != null) ImageStorage.saveForProduct(context, product.id, newImageUri) else existing?.imagePath
@@ -265,7 +261,7 @@ object DataBaseHelper {
         }
     }
 
-    suspend fun deleteProduct(context: Context, id: Int) {
+    suspend fun deleteProduct(context: Context, id: Long) {
         val dao = db(context).productDao()
         val existing = dao.getByIdOnce(id)
         if (existing != null) {

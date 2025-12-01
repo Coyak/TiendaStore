@@ -34,8 +34,8 @@ import java.util.Locale
 fun CartQuickSheet(
     items: List<CartItem>,
     total: Double,
-    onChangeQty: (Int, Int) -> Unit,
-    onRemove: (Int) -> Unit,
+    onChangeQty: (Long, Int) -> Unit,
+    onRemove: (Long) -> Unit,
     onGoCheckout: () -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -51,7 +51,7 @@ fun CartQuickSheet(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            ImageFromPath(it.imagePath, Modifier.size(48.dp))
+                            ImageFromPath(it.imagePath, Modifier.size(48.dp), name = it.name)
                             Column(Modifier.padding(start = 8.dp).weight(1f)) {
                                 Text(it.name)
                                 Text(formatPriceCLP(it.price))

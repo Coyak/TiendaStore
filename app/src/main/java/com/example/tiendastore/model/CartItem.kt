@@ -1,7 +1,7 @@
 package com.example.tiendastore.model
 
 data class CartItem(
-    val productId: Int,
+    val productId: Long,
     val name: String,
     val price: Double,
     val qty: Int,

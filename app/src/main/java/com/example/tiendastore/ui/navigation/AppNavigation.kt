@@ -18,13 +18,14 @@ import com.example.tiendastore.ui.view.CartCheckoutScreen
 import com.example.tiendastore.viewmodel.AuthViewModel
 import com.example.tiendastore.viewmodel.ProductViewModel
 import com.example.tiendastore.viewmodel.CartViewModel
+import com.example.tiendastore.viewmodel.AuthUiState
 
 enum class Screen { LOGIN, REGISTER, HOME, PRODUCT_DETAIL, EDIT_PROFILE, CART_CHECKOUT, ADMIN_LIST, ADMIN_ADD, ADMIN_EDIT }
 
 @Composable
 fun AppNavigation(authVM: AuthViewModel, productVM: ProductViewModel, cartVM: CartViewModel) {
     var screen by remember { mutableStateOf(Screen.LOGIN) }
-    var selectedId by remember { mutableStateOf<Int?>(null) }
+    var selectedId by remember { mutableStateOf<Long?>(null) }
     val currentUser by authVM.currentUser.collectAsState()
 
     LaunchedEffect(currentUser) {
@@ -34,6 +35,7 @@ fun AppNavigation(authVM: AuthViewModel, productVM: ProductViewModel, cartVM: Ca
     when (screen) {
         Screen.LOGIN -> LoginScreen(
             uiState = authVM.ui.collectAsState().value,
+            authVM = authVM,
             onLogin = { email, p -> authVM.login(email, p) },
             onGoRegister = { screen = Screen.REGISTER }
         )
@@ -44,8 +46,8 @@ fun AppNavigation(authVM: AuthViewModel, productVM: ProductViewModel, cartVM: Ca
         )
         Screen.HOME -> HomeScreen(
             products = productVM.products.collectAsState().value,
-            isAdmin = currentUser?.isAdmin == true,
-            displayName = authVM.profile.collectAsState().value?.name ?: "",
+            isAdmin = currentUser?.rol == "ADMIN",
+            displayName = currentUser?.nombre ?: "",
             onLogout = { authVM.logout() },
             onAdmin = { screen = Screen.ADMIN_LIST },
             onEditProfile = { screen = Screen.EDIT_PROFILE },
@@ -91,7 +93,7 @@ fun AppNavigation(authVM: AuthViewModel, productVM: ProductViewModel, cartVM: Ca
             )
         }
         Screen.EDIT_PROFILE -> {
-            val user = authVM.profile.collectAsState().value
+            val user = currentUser
             com.example.tiendastore.ui.view.EditProfileScreen(
                 user = user,
                 errors = authVM.ui.collectAsState().value.errors,

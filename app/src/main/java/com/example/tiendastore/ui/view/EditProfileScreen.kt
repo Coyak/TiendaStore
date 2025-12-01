@@ -20,20 +20,20 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.tiendastore.model.User
+import com.example.tiendastore.model.Usuario
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditProfileScreen(
-    user: User?,
+    user: Usuario?,
     errors: Map<String, String>,
     onSave: (String, String, String, String) -> Unit,
     onBack: () -> Unit
 ) {
-    var name by remember(user) { mutableStateOf(user?.name ?: "") }
+    var name by remember(user) { mutableStateOf(user?.nombre ?: "") }
     var email by remember(user) { mutableStateOf(user?.email ?: "") }
-    var address by remember(user) { mutableStateOf(user?.address ?: "") }
-    var city by remember(user) { mutableStateOf(user?.city ?: "") }
+    var address by remember(user) { mutableStateOf(user?.direccion ?: "") }
+    var city by remember(user) { mutableStateOf(user?.ciudad ?: "") }
     val original = remember(user) { user?.copy() }
     var askConfirm by remember { mutableStateOf(false) }
 
@@ -72,10 +72,10 @@ fun EditProfileScreen(
 
     if (askConfirm && original != null) {
         val changes = buildList {
-            if (original.name != name) add("Nombre")
+            if (original.nombre != name) add("Nombre")
             if (original.email != email) add("Correo")
-            if (original.address != address) add("Dirección")
-            if (original.city != city) add("Ciudad")
+            if (original.direccion != address) add("Dirección")
+            if (original.ciudad != city) add("Ciudad")
         }
         val msg = if (changes.isEmpty()) "No hay cambios para guardar" else "Se modificarán: ${changes.joinToString(", ")}"
         androidx.compose.material3.AlertDialog(

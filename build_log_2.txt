@@ -1,0 +1,122 @@
+> Task :app:clean
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:checkDebugAarMetadata
+> Task :app:processDebugNavigationResources
+> Task :app:compileDebugNavigationResources
+> Task :app:generateDebugResValues
+> Task :app:mapDebugSourceSetPaths
+> Task :app:generateDebugResources
+> Task :app:packageDebugResources
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksDebug
+> Task :app:parseDebugLocalResources
+> Task :app:mergeDebugResources
+> Task :app:processDebugMainManifest
+> Task :app:processDebugManifest
+> Task :app:mergeDebugShaders
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:javaPreCompileDebug
+> Task :app:mergeDebugAssets
+> Task :app:compressDebugAssets
+> Task :app:desugarDebugFileDependencies
+> Task :app:mergeDebugJniLibFolders
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugNativeLibs
+> Task :app:mergeLibDexDebug
+> Task :app:validateSigningDebug
+
+> Task :app:stripDebugDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so. Run with --info option to learn more.
+
+> Task :app:writeDebugAppMetadata
+> Task :app:writeDebugSigningConfigVersions
+> Task :app:processDebugManifestForPackage
+> Task :app:processDebugResources
+> Task :app:mergeExtDexDebug
+
+> Task :app:kaptGenerateStubsDebugKotlin
+w: Kapt currently doesn't support language version 2.0+. Falling back to 1.9.
+
+> Task :app:kaptDebugKotlin
+
+> Task :app:compileDebugKotlin FAILED
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:16:38 Unresolved reference 'Product'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:17:38 Unresolved reference 'User'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:188:31 Unresolved reference 'Product'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:188:41 Unresolved reference 'Product'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:198:5 Unresolved reference 'Product'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:199:10 Unresolved reference 'id'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:200:12 Unresolved reference 'name'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:201:13 Unresolved reference 'price'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:202:13 Unresolved reference 'stock'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:203:16 Argument type mismatch: actual type is 'kotlin.text.CharCategory', but 'kotlin.String' was expected.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:204:19 Unresolved reference 'description'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:205:33 Unresolved reference 'imagePath'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:208:28 Unresolved reference 'User'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:208:35 Unresolved reference 'User'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:218:5 Unresolved reference 'User'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:219:13 Unresolved reference 'email'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:219:13 Argument type mismatch: actual type is 'C', but 'kotlin.String' was expected.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:219:19 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:219:27 Unresolved reference 'username'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:219:29 Unresolved reference 'username'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:220:16 Unresolved reference 'password'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:221:15 Unresolved reference 'isAdmin'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:222:12 Unresolved reference 'name'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:223:15 Unresolved reference 'address'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:224:12 Unresolved reference 'city'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:249:18 Unresolved reference 'Product'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:254:21 Unresolved reference 'id'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:255:45 Overload resolution ambiguity between candidates:
+fun <ERROR TYPE REF: Symbol not found for Product>.toEntity(existingImagePath: String? = ..., newImagePath: String? = ...): ProductEntity
+fun <ERROR TYPE REF: Symbol not found for User>.toEntity(): UserEntity
+fun CartItem.toEntity(): CartItemEntity
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:258:32 Unresolved reference 'copy'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:261:52 Unresolved reference 'id'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:262:99 Unresolved reference 'id'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/data/DataBaseHelper.kt:264:28 Unresolved reference 'id'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/navigation/AppNavigation.kt:47:36 Unresolved reference 'isAdmin'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/navigation/AppNavigation.kt:48:34 Unresolved reference 'profile'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/navigation/AppNavigation.kt:48:42 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/navigation/AppNavigation.kt:48:66 Unresolved reference 'name'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/navigation/AppNavigation.kt:59:59 Argument type mismatch: actual type is 'kotlin.Int', but 'kotlin.Long' was expected.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/navigation/AppNavigation.kt:60:50 Argument type mismatch: actual type is 'kotlin.Int', but 'kotlin.Long' was expected.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/navigation/AppNavigation.kt:73:63 Argument type mismatch: actual type is 'kotlin.Int', but 'kotlin.Long' was expected.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/navigation/AppNavigation.kt:74:54 Argument type mismatch: actual type is 'kotlin.Int', but 'kotlin.Long' was expected.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/navigation/AppNavigation.kt:94:31 Unresolved reference 'profile'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/navigation/AppNavigation.kt:94:39 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/view/EditProfileScreen.kt:35:58 Unresolved reference 'direccion'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/view/EditProfileScreen.kt:36:55 Unresolved reference 'ciudad'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/view/EditProfileScreen.kt:77:26 Unresolved reference 'direccion'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/view/EditProfileScreen.kt:78:26 Unresolved reference 'ciudad'.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/view/components/CartQuickSheet.kt:61:73 Argument type mismatch: actual type is 'kotlin.Long', but 'kotlin.Int' was expected.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/view/components/CartQuickSheet.kt:62:56 Argument type mismatch: actual type is 'kotlin.Long', but 'kotlin.Int' was expected.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/ui/view/components/CartQuickSheet.kt:65:61 Argument type mismatch: actual type is 'kotlin.Long', but 'kotlin.Int' was expected.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/viewmodel/AuthViewModel.kt:6:50 Conflicting import: imported name 'AuthValidator' is ambiguous.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/viewmodel/AuthViewModel.kt:13:50 Conflicting import: imported name 'AuthValidator' is ambiguous.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/viewmodel/AuthViewModel.kt:91:17 No parameter with name 'direccion' found.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/viewmodel/AuthViewModel.kt:92:17 No parameter with name 'ciudad' found.
+e: file:///C:/Users/Angel/Documents/uni/AppsMoviles/ET/TiendaStore-Movil/app/src/main/java/com/example/tiendastore/viewmodel/CartViewModel.kt:51:122 Overload resolution ambiguity between candidates:
+fun <ERROR TYPE REF: Symbol not found for Product>.toEntity(existingImagePath: String? = ..., newImagePath: String? = ...): ProductEntity
+fun <ERROR TYPE REF: Symbol not found for User>.toEntity(): UserEntity
+fun CartItem.toEntity(): CartItemEntity
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 27s
+33 actionable tasks: 33 executed

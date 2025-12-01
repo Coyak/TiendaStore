@@ -34,7 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.tiendastore.model.Product
+import com.example.tiendastore.model.Producto
 import java.text.NumberFormat
 import java.util.Locale
 import com.example.tiendastore.ui.view.components.ImageFromPath
@@ -42,14 +42,14 @@ import com.example.tiendastore.ui.view.components.ImageFromPath
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductDetailScreen(
-    product: Product?,
+    product: Producto?,
     onBack: () -> Unit,
-    onAddToCart: (Product?) -> Unit,
+    onAddToCart: (Producto?) -> Unit,
     cartCount: Int,
     cartItems: List<CartItem>,
     cartTotal: Double,
-    onCartChangeQty: (Int, Int) -> Unit,
-    onCartRemove: (Int) -> Unit,
+    onCartChangeQty: (Long, Int) -> Unit,
+    onCartRemove: (Long) -> Unit,
     onGoCheckout: () -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -81,11 +81,11 @@ fun ProductDetailScreen(
             }
 
             // Título y precio destacado
-            ImageFromPath(product.imagePath, Modifier.fillMaxWidth().aspectRatio(1f))
+            ImageFromPath(product.imagenUrl, Modifier.fillMaxWidth().aspectRatio(1f), name = product.nombre)
             Spacer(Modifier.padding(8.dp))
-            Text(product.name, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.SemiBold)
+            Text(product.nombre, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.SemiBold)
             Spacer(Modifier.padding(4.dp))
-            Text(formatPriceCLP(product.price), style = MaterialTheme.typography.titleLarge)
+            Text(formatPriceCLP(product.precio), style = MaterialTheme.typography.titleLarge)
             Spacer(Modifier.padding(8.dp))
             Button(onClick = {
                 onAddToCart(product)
@@ -102,11 +102,10 @@ fun ProductDetailScreen(
             Spacer(Modifier.padding(8.dp))
 
             // Info principal
-            Text("Categoría: ${product.category}", style = MaterialTheme.typography.bodyMedium)
             Text("Stock: ${product.stock}", style = MaterialTheme.typography.bodyMedium)
-            if (product.description.isNotBlank()) {
+            if (product.descripcion.isNotBlank()) {
                 Spacer(Modifier.padding(8.dp))
-                Text(product.description, style = MaterialTheme.typography.bodyLarge)
+                Text(product.descripcion, style = MaterialTheme.typography.bodyLarge)
             }
 
             Spacer(Modifier.weight(1f))
